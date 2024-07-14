@@ -30,6 +30,9 @@ else
     ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem /etc/accel-ppp/server.crt
 fi
 
+# replace in accel-ppp.conf vpn.example.com with SSTP_HOSTNAME
+sed -i "s/vpn.example.com/${SSTP_HOSTNAME}/g" /etc/accel-ppp.conf
+
 # /dev/ppp
 echo "Creating /dev/ppp"
 if [ ! -e /dev/ppp ]; then
