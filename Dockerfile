@@ -18,6 +18,8 @@ RUN apk add --no-cache \
 
 # Clone accel-ppp
 RUN git clone https://github.com/accel-ppp/accel-ppp
+RUN cd accel-ppp && git checkout master
+
 # Or use local copy for development
 #COPY accel-ppp /accel-ppp
 
