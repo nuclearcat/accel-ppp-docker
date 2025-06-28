@@ -1,5 +1,5 @@
 # accel-ppp build in alpine
-FROM alpine:3.20
+FROM alpine:3.22
 
 # Install dependencies
 RUN apk add --no-cache \
@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     zlib-dev \
     pcre-dev lua5.1-dev libucontext-dev \
     openssl-dev \
-    iptables
+    iptables pcre2-dev
 
 # Clone accel-ppp
 RUN git clone https://github.com/accel-ppp/accel-ppp
