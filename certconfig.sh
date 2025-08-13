@@ -16,6 +16,20 @@ if [ ! -e "/etc/letsencrypt/live/${SSTP_HOSTNAME}/fullchain.pem" ]; then
     ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem /etc/accel-ppp/server.crt
 else
     echo "Certificate for ${SSTP_HOSTNAME} already exists"
+    ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/fullchain.pem /etc/accel-ppp/ca.crt
+    ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/privkey.pem /etc/accel-ppp/server.key
+    ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem /etc/accel-ppp/server.crt
+    echo "Check if certificate for ${SSTP_HOSTNAME} is about to expire"
+    # try to renew (this check fails due missing ssl)
+    # but no harm, certbot renew handle situation gracefully
+    openssl x509 -in /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem -checkend 86400 -noout
+    if [ $? -ne 0 ]; then
+        echo "Certificate for ${SSTP_HOSTNAME} is expired, renewing"
+        #certbot certonly --standalone -d ${SSTP_HOSTNAME} --email nuclearcat@nuclearcat.com --agree-tos --no-eff-email
+        certbot renew --standalone
+    else
+        echo "Certificate for ${SSTP_HOSTNAME} is valid"
+    fi
     if [ -e /etc/accel-ppp/ca.crt ]; then
         rm /etc/accel-ppp/ca.crt
     fi
@@ -25,9 +39,6 @@ else
     if [ -e /etc/accel-ppp/server.crt ]; then
         rm /etc/accel-ppp/server.crt
     fi
-    ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/fullchain.pem /etc/accel-ppp/ca.crt
-    ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/privkey.pem /etc/accel-ppp/server.key
-    ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem /etc/accel-ppp/server.crt
 fi
 
 # replace in accel-ppp.conf vpn.example.com with SSTP_HOSTNAME
