@@ -16,9 +16,18 @@ RUN apk add --no-cache \
     openssl-dev \
     iptables pcre2-dev
 
+# Revision of accel-ppp to build.
+# Pinned so the build is reproducible and so bumping it invalidates the
+# docker layer cache (a plain "master" would keep serving a stale clone).
+# Override with: docker build --build-arg ACCEL_PPP_REF=master .
+ARG ACCEL_PPP_REPO=https://github.com/accel-ppp/accel-ppp
+ARG ACCEL_PPP_REF=57ae56148c5519b9207ede623098d3cfad5211b8
+
 # Clone accel-ppp
-RUN git clone https://github.com/accel-ppp/accel-ppp
-RUN cd accel-ppp && git checkout master
+RUN git clone ${ACCEL_PPP_REPO} accel-ppp && \
+    cd accel-ppp && \
+    git checkout ${ACCEL_PPP_REF} && \
+    git log -1 --oneline
 
 # Or use local copy for development
 #COPY accel-ppp /accel-ppp
