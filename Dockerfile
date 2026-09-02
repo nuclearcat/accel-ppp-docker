@@ -14,6 +14,7 @@ RUN apk add --no-cache \
     zlib-dev \
     pcre-dev lua5.1-dev libucontext-dev \
     openssl-dev \
+    openssl \
     iptables pcre2-dev
 
 # Revision of accel-ppp to build.

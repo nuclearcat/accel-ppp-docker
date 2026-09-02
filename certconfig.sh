@@ -20,8 +20,8 @@ else
     ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/privkey.pem /etc/accel-ppp/server.key
     ln -s /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem /etc/accel-ppp/server.crt
     echo "Check if certificate for ${SSTP_HOSTNAME} is about to expire"
-    # try to renew (this check fails due missing ssl)
-    # but no harm, certbot renew handle situation gracefully
+    # openssl is installed in the image, so this check is meaningful:
+    # renew only when the certificate really is within a day of expiring
     openssl x509 -in /etc/letsencrypt/live/${SSTP_HOSTNAME}/cert.pem -checkend 86400 -noout
     if [ $? -ne 0 ]; then
         echo "Certificate for ${SSTP_HOSTNAME} is expired, renewing"
